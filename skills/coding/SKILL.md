@@ -42,6 +42,16 @@ Apply these principles within the existing architecture. Do not turn a focused t
 
 Update associated types, callers, tests, or API specifications when required by the approved behavior change. If this reveals work outside the approved scope, pause and ask rather than silently expanding it.
 
+### File-size review
+
+Use line count as a lightweight maintainability guideline.
+
+1. During validation, count lines in new or modified handwritten source files, including tests. Count all physical lines, including blank lines and comments; do not add counting dependencies.
+2. Review files above roughly **300 lines** for separate responsibilities. This is an advisory review trigger, not a hard limit or failing check.
+3. Split only when it improves cohesion, readability, and navigation. If keeping a larger file is clearer, briefly explain the exception in the final report. Do not fragment coherent code just to meet the threshold or refactor unrelated files.
+
+Exclude generated files, lockfiles, fixture data, documentation, and vendored code. Follow an explicit project-specific file-size policy when one exists.
+
 ## 4. Validate against the project
 
 Use commands found in project scripts, configuration, or documentation; do not assume a package manager or test framework.
