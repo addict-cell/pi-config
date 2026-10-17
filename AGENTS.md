@@ -34,6 +34,8 @@ This is an editable, user-authorized profile, not a transcript or a claim of con
 
 ## Project workspace and reference
 
+- Repository shorthand: when the user says "my repo", they mean `xiliumz`; when they say "your repo", they mean `addict-cell`. These are naming conventions, not claims of assistant ownership.
+
 Use `/home/computer/pria-random/` as the default directory for projects. Create each new project in its own subdirectory there unless the user specifies another location. Do not move existing projects without approval.
 
 The prior read-only account audit is `/home/computer/account-audit-2026-10-14.md`. Treat it as a dated snapshot, not proof of current permissions or security.
