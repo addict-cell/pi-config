@@ -1,5 +1,5 @@
 /**
- * Notify when the agent finishes and is waiting for input.
+ * Notify when the agent finishes or a blocking UI prompt needs input.
  *
  * Channels (auto-detected):
  * - Windows Terminal / WSL: PowerShell toast
@@ -12,7 +12,8 @@
  * success does not confirm that the desktop displayed the notification.
  * - Terminal bell (fallback if all notification channels fail)
  *
- * Skips runs shorter than QUIET_SECONDS (avoids spam on instant replies).
+ * Skips completion notifications for runs shorter than QUIET_SECONDS.
+ * UI prompts notify immediately, independently of agent-run completion.
  */
 
 import { execFile } from "node:child_process";
@@ -23,6 +24,7 @@ const execFileAsync = promisify(execFile);
 
 const TITLE = "Pi";
 const DEFAULT_BODY = "Agent finished — ready for input";
+const PROMPT_BODY = "Waiting for your input";
 /** Only notify if the run lasted at least this many seconds. 0 = always. */
 const QUIET_SECONDS = 3;
 
@@ -180,6 +182,13 @@ async function fire(body: string = DEFAULT_BODY): Promise<void> {
 }
 
 export default function (pi: ExtensionAPI) {
+	pi.on("ui_prompt_start", (_event, ctx) => {
+		if (ctx.mode !== "tui") return;
+		// Command-driven prompts may have no agent_start. Do not delay opening the UI,
+		// expose its title, or suppress the agent's eventual completion notification.
+		void fire(PROMPT_BODY).catch(() => { /* Notifications are best-effort. */ });
+	});
+
 	pi.on("agent_start", async () => {
 		runStartedAt = Date.now();
 		lastPreview = undefined;
