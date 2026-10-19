@@ -1,14 +1,5 @@
 {
-  "lastChangelogVersion": "0.85.0",
-  "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.6-luna",
-  "defaultThinkingLevel": "max",
-  "enabledModels": [
-    "openrouter/deepseek/deepseek-v4-flash-0731",
-    "xai/grok-4.6",
-    "openai-codex/gpt-5.6-luna",
-    "openai-codex/gpt-6-astra"
-  ],
+  "enabledModels": [],
   "editorPaddingX": 0,
   "hideThinkingBlock": false,
   "terminal": {
@@ -20,9 +11,7 @@
     "npm:@juicesharp/rpiv-ask-user-question",
     {
       "source": "npm:pi-auto-inject",
-      "extensions": [
-        "+extensions/index.ts"
-      ]
+      "extensions": ["+extensions/index.ts"]
     },
     "git:github.com/The-Terrans/pi-loop"
   ],
