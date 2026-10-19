@@ -16,9 +16,5 @@
     "git:github.com/The-Terrans/pi-loop"
   ],
   "theme": "dark",
-  "extensions": [
-    "+extensions/ctx-timeout.ts",
-    "+extensions/agent-timer.ts",
-    "+extensions/thinking-select.ts"
-  ]
+  "lastChangelogVersion": "1.0.0"
 }
