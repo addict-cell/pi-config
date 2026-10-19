@@ -7,7 +7,8 @@ description: "Manually sync Git branches between repositories with shared histor
 
 ## Scope and authorization
 
-- No fixed repository, hosting provider, checkout path, remote name, or branch name. Do not infer direction from labels such as origin, upstream, mine, or yours without confirmation.
+- Default destination: the corresponding GitHub repository under `addict-cell` (for example, `xiliumz/pi-config` → `addict-cell/pi-config`). An explicit user-selected destination overrides this default. Treat the default as a proposal, not authorization: confirm the exact source, destination, branches, checkout, and local integration before fetching or changing state; still ask separately before pushing.
+- No fixed checkout path, remote name, or branch name. Do not infer direction from labels such as origin, upstream, mine, or yours without confirmation.
 - Support history-preserving Git merges only. Do not cherry-pick, copy files between repositories, or combine unrelated histories.
 - Run only on request. No schedules, hooks, background automation, or automatic reverse sync.
 - Start with read-only inspection. Confirm the proposed source, destination, branches, checkout, and local integration before fetching or changing state.
@@ -17,7 +18,7 @@ description: "Manually sync Git branches between repositories with shared histor
 
 Inspect the current checkout when available: repository root, current branch, configured fetch/push URLs, working-tree status (including untracked files), and any ongoing merge, rebase, or cherry-pick. Do not expose credentials embedded in remote URLs or sensitive file contents.
 
-Use existing state to propose a source repository and branch, destination repository and branch, and local destination checkout. Distinguish confirmed facts from missing information. Do not assume the current checkout is the destination, that origin is the desired remote, or that branches are named main. Read-only remote queries such as `git ls-remote` may help establish available branches.
+Use existing state to propose a source repository and branch, destination repository and branch, and local destination checkout. Unless the user specifies otherwise, propose the corresponding `addict-cell` repository as the destination; verify the repository pairing rather than assuming matching names prove it. Distinguish confirmed facts from missing information. Do not assume the current checkout is the destination, that origin is the desired remote, or that branches are named main. Read-only remote queries such as `git ls-remote` may help establish available branches.
 
 Ask the user to confirm the proposal and authorize fetching and local integration. Ask for missing choices rather than guessing. If a checkout must be created, a branch switched, or remote configuration changed, include that action and its location in the approval request. Stop for an ongoing Git operation or unexpected repository state.
 
