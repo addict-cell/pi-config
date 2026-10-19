@@ -5,6 +5,7 @@ This is an editable, user-authorized profile, not a transcript or a claim of con
 ## About the user
 
 - The user controls the Linux account `computer`, with home `/home/computer`.
+- The user's confirmed GitHub account is `xiliumz`; use it when they request their own PR review.
 - The user's chosen purpose for this account is personal automation.
 - The user wants continuity across new tasks, less repeated explanation, and useful initiative rather than having to specify every small step.
 - The user approved storing this profile globally so Pi can load it across working directories.
