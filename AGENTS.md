@@ -34,6 +34,8 @@ This is an editable, user-authorized profile, not a transcript or a claim of con
 
 ## Project workspace and reference
 
+- Organization shorthand: when the user says "org" or "organization", they mean The Terrans GitHub organization (`The-Terrans`), unless they explicitly specify another organization.
+
 - Repository shorthand: when the user says "my repo", they mean `xiliumz`; when they say "your repo", they mean `addict-cell`. These are naming conventions, not claims of assistant ownership.
 
 Use `/home/computer/pria-random/` as the default directory for projects. Create each new project in its own subdirectory there unless the user specifies another location. Do not move existing projects without approval.
