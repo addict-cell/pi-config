@@ -11,10 +11,12 @@
     "npm:@juicesharp/rpiv-ask-user-question",
     {
       "source": "npm:pi-auto-inject",
-      "extensions": ["+extensions/index.ts"]
+      "extensions": [
+        "+extensions/index.ts"
+      ]
     },
     "git:github.com/The-Terrans/pi-loop"
   ],
   "theme": "dark",
-  "lastChangelogVersion": "1.0.0"
+  "lastChangelogVersion": "1.3.0"
 }
