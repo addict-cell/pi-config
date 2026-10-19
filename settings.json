@@ -17,8 +17,14 @@
   "packages": [
     "npm:context-mode",
     "npm:@xiliumz/pi-minimal",
-    "npm:pi-auto-inject",
-    "npm:@juicesharp/rpiv-ask-user-question"
+    "npm:@juicesharp/rpiv-ask-user-question",
+    {
+      "source": "npm:pi-auto-inject",
+      "extensions": [
+        "+extensions/index.ts"
+      ]
+    },
+    "git:github.com/The-Terrans/pi-loop"
   ],
   "theme": "dark",
   "extensions": [
