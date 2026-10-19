@@ -12,7 +12,7 @@ const source = stripTypeScriptTypes(
 const load = compileFunction(`${source}; return { describeComparison, register };`, ["execFileAsync"]);
 const flush = () => new Promise<void>(resolve => setImmediate(resolve));
 
-function setup(execute = async () => ({ stdout: '{"ahead_by":2,"behind_by":0}' })) {
+function setup(execute = async () => ({ stdout: '{"ahead_by":2,"behind_by":1}' })) {
 	const calls: any[][] = [];
 	const notices: any[][] = [];
 	const handlers: Record<string, Function> = {};
@@ -24,17 +24,26 @@ function setup(execute = async () => ({ stdout: '{"ahead_by":2,"behind_by":0}' }
 	return { ...api, calls, notices, handlers, ctx };
 }
 
-test("reports ahead, behind, identical and diverged in the correct direction", () => {
+test("reports only behind and diverged in the correct direction", () => {
 	const s = setup();
 	for (const [ahead_by, behind_by, text, level] of [
-		[2, 0, /2 commit\(s\) missing.*\(ahead\)/, "warning"],
-		[0, 3, /3 commit\(s\) behind.*not ahead/, "info"],
-		[0, 0, /in sync/, "info"],
+		[0, 3, /3 commit\(s\) behind/, "warning"],
 		[4, 2, /4 commit\(s\) missing.*2 behind \(diverged\)/, "warning"],
 	] as const) {
 		const result = s.describeComparison(JSON.stringify({ ahead_by, behind_by }));
 		assert.match(result.message, text);
 		assert.equal(result.level, level);
+	}
+});
+
+test("ahead and identical comparisons produce no notification", async () => {
+	for (const ahead_by of [0, 2]) {
+		const stdout = JSON.stringify({ ahead_by, behind_by: 0 });
+		const s = setup(async () => ({ stdout }));
+		assert.equal(s.describeComparison(stdout), undefined);
+		s.handlers.session_start({}, s.ctx);
+		await flush();
+		assert.equal(s.notices.length, 0);
 	}
 });
 
@@ -68,15 +77,13 @@ test("skips print, JSON and RPC modes", async () => {
 	assert.equal(s.calls.length, 0);
 });
 
-test("network, authentication, timeout and malformed responses report unavailable", async () => {
+test("failed and malformed responses stay silent", async () => {
 	for (const execute of [async () => { throw new Error("sensitive backend detail"); },
 		async () => ({ stdout: "{}" })]) {
 		const s = setup(execute);
 		s.handlers.session_start({}, s.ctx);
 		await flush();
-		assert.equal(s.notices.length, 1);
-		assert.match(s.notices[0][0], /comparison unavailable/);
-		assert.doesNotMatch(s.notices[0][0], /sensitive/);
+		assert.equal(s.notices.length, 0);
 	}
 });
 
@@ -86,7 +93,7 @@ test("shutdown aborts pending request and suppresses stale notifications", async
 	s.handlers.session_start({}, s.ctx);
 	s.handlers.session_shutdown();
 	assert.equal(s.calls[0][2].signal.aborted, true);
-	finish({ stdout: '{"ahead_by":1,"behind_by":0}' });
+	finish({ stdout: '{"ahead_by":1,"behind_by":2}' });
 	await flush();
 	assert.equal(s.notices.length, 0);
 });

@@ -1,5 +1,6 @@
 /** Read-only GitHub check for this config repo, once per interactive Pi load.
  * Disable by removing this extension. /reload also runs a fresh check.
+ * Only notify when xiliumz/main is behind or diverged; otherwise stay silent.
  * Requires gh on PATH with access to both repositories; never fetches or syncs.
  */
 import { execFile } from "node:child_process";
@@ -9,23 +10,22 @@ import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 const execFileAsync = promisify(execFile);
 const ENDPOINT = "repos/addict-cell/pi-config/compare/main...xiliumz:main";
 
-function describeComparison(raw: string): { message: string; level: "info" | "warning" } {
+function describeComparison(raw: string): { message: string; level: "warning" } | undefined {
 	const { ahead_by: ahead, behind_by: behind } = JSON.parse(raw);
 	if (!Number.isSafeInteger(ahead) || ahead < 0 || !Number.isSafeInteger(behind) || behind < 0) {
 		throw new Error("Invalid comparison counts");
 	}
+	if (behind === 0) return undefined;
 	const prefix = "pi-config: xiliumz/main";
 	if (ahead > 0) {
 		return {
-			message: `${prefix} has ${ahead} commit(s) missing from addict-cell/main${behind > 0 ? `; also ${behind} behind (diverged)` : " (ahead)"}. No sync performed.`,
+			message: `${prefix} has ${ahead} commit(s) missing from addict-cell/main; also ${behind} behind (diverged). No sync performed.`,
 			level: "warning",
 		};
 	}
 	return {
-		message: behind > 0
-			? `${prefix} is ${behind} commit(s) behind addict-cell/main; not ahead.`
-			: `${prefix} and addict-cell/main are in sync.`,
-		level: "info",
+		message: `${prefix} is ${behind} commit(s) behind addict-cell/main. No sync performed.`,
+		level: "warning",
 	};
 }
 
@@ -44,13 +44,9 @@ export default function (pi: ExtensionAPI) {
 			env: { ...process.env, GH_PROMPT_DISABLED: "1" },
 		}).then(({ stdout }) => {
 			if (controller.signal.aborted) return;
-			const { message, level } = describeComparison(stdout);
-			ctx.ui.notify(message, level);
-		}).catch(() => {
-			if (!controller.signal.aborted) {
-				ctx.ui.notify("pi-config: comparison unavailable. Check network and gh authentication/access; /reload to retry.", "warning");
-			}
-		});
+			const result = describeComparison(stdout);
+			if (result) ctx.ui.notify(result.message, result.level);
+		}).catch(() => { /* Stay silent unless behind or diverged is confirmed. */ });
 	});
 	pi.on("session_shutdown", () => controller.abort());
 }
