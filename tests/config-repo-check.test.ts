@@ -24,11 +24,11 @@ function setup(execute = async () => ({ stdout: '{"ahead_by":2,"behind_by":1}' }
 	return { ...api, calls, notices, handlers, ctx };
 }
 
-test("reports only behind and diverged in the correct direction", () => {
+test("reports only addict-cell behind or diverged relative to xiliumz", () => {
 	const s = setup();
 	for (const [ahead_by, behind_by, text, level] of [
-		[0, 3, /3 commit\(s\) behind/, "warning"],
-		[4, 2, /4 commit\(s\) missing.*2 behind \(diverged\)/, "warning"],
+		[0, 3, /addict-cell\/main is 3 commit\(s\) behind xiliumz\/main/, "warning"],
+		[4, 2, /addict-cell\/main has 4 commit\(s\) missing from xiliumz\/main; also 2 behind \(diverged\)/, "warning"],
 	] as const) {
 		const result = s.describeComparison(JSON.stringify({ ahead_by, behind_by }));
 		assert.match(result.message, text);
@@ -36,7 +36,7 @@ test("reports only behind and diverged in the correct direction", () => {
 	}
 });
 
-test("ahead and identical comparisons produce no notification", async () => {
+test("xiliumz behind or identical produces no notification", async () => {
 	for (const ahead_by of [0, 2]) {
 		const stdout = JSON.stringify({ ahead_by, behind_by: 0 });
 		const s = setup(async () => ({ stdout }));
@@ -64,7 +64,7 @@ test("nonblocking startup checks only fixed config repo once, irrespective of cw
 	const [command, args, options] = s.calls[0];
 	assert.equal(command, "gh");
 	assert.deepEqual(args, ["api", "--hostname", "github.com",
-		"repos/addict-cell/pi-config/compare/main...xiliumz:main", "--jq", "{ahead_by,behind_by}"]);
+		"repos/xiliumz/pi-config/compare/main...addict-cell:main", "--jq", "{ahead_by,behind_by}"]);
 	assert.equal(options.timeout, 10000);
 	assert.equal(options.env.GH_PROMPT_DISABLED, "1");
 	assert.equal(s.notices.length, 1);

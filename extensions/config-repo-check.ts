@@ -1,6 +1,6 @@
 /** Read-only GitHub check for this config repo, once per interactive Pi load.
  * Disable by removing this extension. /reload also runs a fresh check.
- * Only notify when xiliumz/main is behind or diverged; otherwise stay silent.
+ * Only notify when addict-cell/main is behind or diverged; otherwise stay silent.
  * Requires gh on PATH with access to both repositories; never fetches or syncs.
  */
 import { execFile } from "node:child_process";
@@ -8,7 +8,8 @@ import { promisify } from "node:util";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 const execFileAsync = promisify(execFile);
-const ENDPOINT = "repos/addict-cell/pi-config/compare/main...xiliumz:main";
+// GitHub counts the head (addict-cell) relative to the base (xiliumz).
+const ENDPOINT = "repos/xiliumz/pi-config/compare/main...addict-cell:main";
 
 function describeComparison(raw: string): { message: string; level: "warning" } | undefined {
 	const { ahead_by: ahead, behind_by: behind } = JSON.parse(raw);
@@ -16,15 +17,15 @@ function describeComparison(raw: string): { message: string; level: "warning" } 
 		throw new Error("Invalid comparison counts");
 	}
 	if (behind === 0) return undefined;
-	const prefix = "pi-config: xiliumz/main";
+	const prefix = "pi-config: addict-cell/main";
 	if (ahead > 0) {
 		return {
-			message: `${prefix} has ${ahead} commit(s) missing from addict-cell/main; also ${behind} behind (diverged). No sync performed.`,
+			message: `${prefix} has ${ahead} commit(s) missing from xiliumz/main; also ${behind} behind (diverged). No sync performed.`,
 			level: "warning",
 		};
 	}
 	return {
-		message: `${prefix} is ${behind} commit(s) behind addict-cell/main. No sync performed.`,
+		message: `${prefix} is ${behind} commit(s) behind xiliumz/main. No sync performed.`,
 		level: "warning",
 	};
 }
