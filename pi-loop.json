@@ -2,7 +2,7 @@
   "hardCeiling": 20,
   "timeoutMs": 1800000,
   "resources": {
-    "skills": [],
+    "skills": ["skills/coding/SKILL.md"],
     "extensions": []
   }
 }
