@@ -6,4 +6,5 @@ npm
 mcp-cache.json
 models-store.json
 bin/
-pi-loop/
+pi-loop/runs/
+pi-loop/locks/
