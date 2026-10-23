@@ -10,7 +10,10 @@
     "showTerminalProgress": true
   },
   "packages": [
-    "npm:context-mode",
+    {
+      "source": "npm:context-mode",
+      "skills": []
+    },
     "npm:@xiliumz/pi-minimal",
     "npm:pi-auto-inject",
     "npm:@juicesharp/rpiv-ask-user-question",
