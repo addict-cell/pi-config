@@ -1,4 +1,8 @@
 {
+  "lastChangelogVersion": "1.3.0",
+  "defaultProvider": "",
+  "defaultModel": "",
+  "defaultThinkingLevel": "",
   "enabledModels": [],
   "editorPaddingX": 0,
   "hideThinkingBlock": false,
@@ -6,7 +10,10 @@
     "showTerminalProgress": true
   },
   "packages": [
-    "npm:context-mode",
+    {
+      "source": "npm:context-mode",
+      "skills": []
+    },
     "npm:@xiliumz/pi-minimal",
     "npm:@juicesharp/rpiv-ask-user-question",
     {
@@ -17,6 +24,5 @@
     },
     "git:github.com/The-Terrans/pi-loop"
   ],
-  "theme": "dark",
-  "lastChangelogVersion": "1.3.0"
+  "theme": "dark"
 }
