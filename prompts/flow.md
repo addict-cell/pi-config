@@ -1,9 +1,9 @@
 ---
-description: Give me the architecture flow of [X]
+description: Give me the flow of [X]
 argument-hint: "What flow to ask"
 ---
 
-Give me the architecture flow of $ARGUMENTS
+Give me the flow of $ARGUMENTS
 
 1. High-level flow (simple steps + components)
 2. Then the detailed code path with key files and functions
